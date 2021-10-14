@@ -23,8 +23,12 @@ time = '15:00'
 
 df = get_weather_data(date,time)
 
+
+
 df.dropna(subset = ["air_temp_C"], inplace=True) #drop null values
 df.index = range(0,len(df))
+
+
 
 print(df)
 
@@ -54,7 +58,7 @@ triFn = Triangulation(totalPointsArray[:,0],totalPointsArray[:,1])
 linTriFn = LinearTriInterpolator(triFn,totalPointsArray[:,2])
 
 #define raster resolution in (m)
-rasterRes = 5000
+rasterRes = 10000
 
 xCoords = np.arange(totalPointsArray[:,0].min(), totalPointsArray[:,0].max()+rasterRes, rasterRes)
 yCoords = np.arange(totalPointsArray[:,1].min(), totalPointsArray[:,1].max()+rasterRes, rasterRes)

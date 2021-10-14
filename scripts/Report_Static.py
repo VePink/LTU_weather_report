@@ -61,7 +61,7 @@ def style_plot(df,name,plot_value,colormap):
 
 
 print("############################## PROCESS ##############################")
-date = '2021-10-13'
+date = '2021-10-14'
 time = '15:00'
 
 df = get_weather_data(date,time)
