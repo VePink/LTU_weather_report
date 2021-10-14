@@ -13,9 +13,6 @@ def get_weather_data(date,time):
     df_stations = df_stations[['station_UID', 'station_name', 'lat_LKS94', 'long_LKS94']]
     df = df_weather.merge(df_stations, on='station_UID') #join table of weather data and static table with station locations
     df.drop_duplicates(subset=['station_UID'], inplace=True)
-    print(len(df))
-    print(df['timestamp'].min())
-    print(df['timestamp'].max())
     return df
 
 
@@ -44,23 +41,40 @@ def style_plot(df,name,plot_value,colormap):
 
     plot_val_min = df[plot_value].min()
     plot_val_max = df[plot_value].max()
-    plot_val_range = plot_val_max - plot_val_min
+    plot_val_range = round(plot_val_max-plot_val_min, 1)
     
-    title = name + " | " + "min: " + str(plot_val_min) + " | max: " + str(plot_val_max) + " | range: " + str(plot_val_range) + " | "
+    date_time_start = df['timestamp'].min()
+    date_time_end = df['timestamp'].max()
+    title = name + " during period " + str(date_time_start) + " - " + str(date_time_end)
     plt.title(title)
+    statistics = "min: " + str(plot_val_min) + "\n" + "max: " + str(plot_val_max) + "\n" + "range: " + str(plot_val_range)
+
+    font2 = {'family': 'Arial',
+             'color': 'grey',
+             'weight': 'normal',
+             'size': 16,
+             }
+    
+    plt.text(319117, 5983941, statistics, fontdict=font2)
+
 
 
 
 print("############################## PROCESS ##############################")
-date = '2021-10-08'
-time = '12:30'
+date = '2021-10-13'
+time = '15:00'
 
 df = get_weather_data(date,time)
 
 plt.style.use('dark_background')
-plt.figure(figsize=(10,32))
+plt.figure(figsize=(10,36))
 
 subplot_count = 5
+
+#cmap=plt.cm.jet
+#bounds = [10, 20, 40, 60]
+#plt.colorbar(img, cmap=cmap, norm=norm, boundaries=bounds, ticks=bounds)
+#norm = mpl.colors.BoundaryNorm(bounds, cmap.N)
 
 plt.subplot(subplot_count,1,1)
 style_plot(df,'Air temperature [C]','air_temp_C','coolwarm')
@@ -72,7 +86,7 @@ plt.subplot(subplot_count,1,3)
 style_plot(df,'Wind direction [d.d.]','wind_dir','plasma')
 
 plt.subplot(subplot_count, 1, 4)
-style_plot(df,'Precipitation amount [mm]','prcp_amount_mm','Blues')
+style_plot(df,'Precipitation amount [mm/h]','prcp_amount_mm','Blues')
 
 plt.subplot(subplot_count, 1, 5)
 style_plot(df,'Visibility [m]','visibility_m','Blues')
