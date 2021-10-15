@@ -76,7 +76,7 @@ triangles = mtri.Triangulation(x,y)
 interp_lin = mtri.LinearTriInterpolator(triangles,z)
 
 plt.triplot(triangles, 'bo-', lw=1)
-
+add_LTU_border()
 
 
 #define raster resolution in (m)
@@ -87,11 +87,14 @@ xCoords = np.arange(totalPointsArray[:,0].min(), totalPointsArray[:,0].max()+ras
 yCoords = np.arange(totalPointsArray[:,1].min(), totalPointsArray[:,1].max()+rasterRes, rasterRes)
 zCoords = np.zeros([yCoords.shape[0],xCoords.shape[0]])
 '''
+"""
+xCoords = np.arange(y.min(), y.max()+rasterRes, rasterRes)
+yCoords = np.arange(x.min(), x.max()+rasterRes, rasterRes)
+zCoords = np.zeros([yCoords.shape[0],xCoords.shape[0]])
+"""
 
+"""
 
-
-
-'''
 #loop among each cell in the raster extension
 for indexX, x in np.ndenumerate(xCoords):
     for indexY, y in np.ndenumerate(yCoords):
@@ -108,9 +111,5 @@ print(xCoords)
 print(yCoords)
 #preliminary representation of the interpolated values
 plt.imshow(zCoords, interpolation='none')
-
-
-plt.show()
-'''
-add_LTU_border()
+"""
 plt.show()
