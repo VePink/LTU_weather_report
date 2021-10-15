@@ -58,14 +58,12 @@ for index, row in df.iterrows():
 
 totalPointsArray = np.delete(totalPointsArray, (-1), axis=0)
 np.set_printoptions(suppress=True)
-print(totalPointsArray)
+#print(totalPointsArray)
 
 
 y = totalPointsArray[:,0]
 x = totalPointsArray[:,1]
 z = totalPointsArray[:,2]
-
-print(str(x)+", "+str(y))
 
 
 
@@ -75,12 +73,33 @@ triangles = mtri.Triangulation(x,y)
 #linear triangule interpolator funtion
 interp_lin = mtri.LinearTriInterpolator(triangles,z)
 
-plt.triplot(triangles, 'bo-', lw=1)
-add_LTU_border()
 
 
-#define raster resolution in (m)
-rasterRes = 5000
+
+
+xi, yi = np.meshgrid(np.linspace(x.min(), x.max()), np.linspace(y.min(), y.max()))
+interpolation = mtri.CubicTriInterpolator(triangles, z, kind='geom') #'geom', 'min_E'interpolation methods
+zi = interpolation(xi, yi)
+
+print(x.min())
+'''
+plt.contourf(zi)
+
+plt.autoscale = False
+
+plt.show()
+'''
+
+
+plt.contourf(zi)
+#plt.autoscale(False) # To avoid that the scatter changes limits
+#plt.scatter(x,y,s=250,c=z,alpha=0.85, cmap='plasma')
+
+
+
+plt.show()
+
+
 
 '''
 xCoords = np.arange(totalPointsArray[:,0].min(), totalPointsArray[:,0].max()+rasterRes, rasterRes)
@@ -112,4 +131,3 @@ print(yCoords)
 #preliminary representation of the interpolated values
 plt.imshow(zCoords, interpolation='none')
 """
-plt.show()
