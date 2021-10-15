@@ -23,33 +23,30 @@ time = '15:00'
 
 df = get_weather_data(date,time)
 
-
-
-df.dropna(subset = ["air_temp_C"], inplace=True) #drop null values
+field_to_plot = 'prcp_amount_mm'
+df.dropna(subset = [field_to_plot], inplace=True) #drop null values
 df.index = range(0,len(df))
 
-
-
-print(df)
 
 totalPointsArray = np.zeros([
     len(df)+1,
     3])
 
 for index, row in df.iterrows():
-    if (pd.isnull(row["air_temp_C"])):
+    print(row["lat_LKS94"])
+    if (pd.isnull(row[field_to_plot])):
         print("NULL")
     else:
-        pointArray = np.array([row["lat_LKS94"],
-                               row["long_LKS94"],
-                               row['air_temp_C']
+        pointArray = np.array([row["long_LKS94"],
+                               row["lat_LKS94"],
+                               row[field_to_plot]
                                ])
 
     totalPointsArray[index] = pointArray
 
 totalPointsArray = np.delete(totalPointsArray, (-1), axis=0)
+np.set_printoptions(suppress=True)
 print(totalPointsArray)
-
 
 
 #triangulation function
@@ -58,7 +55,7 @@ triFn = Triangulation(totalPointsArray[:,0],totalPointsArray[:,1])
 linTriFn = LinearTriInterpolator(triFn,totalPointsArray[:,2])
 
 #define raster resolution in (m)
-rasterRes = 10000
+rasterRes = 5000
 
 xCoords = np.arange(totalPointsArray[:,0].min(), totalPointsArray[:,0].max()+rasterRes, rasterRes)
 yCoords = np.arange(totalPointsArray[:,1].min(), totalPointsArray[:,1].max()+rasterRes, rasterRes)
@@ -74,8 +71,8 @@ for indexX, x in np.ndenumerate(xCoords):
         else:
             zCoords[indexY,indexX]=np.nan
 
+zCoords = np.rot90(zCoords, 1)
 
 #preliminary representation of the interpolated values
-plt.imshow(zCoords, interpolation='bicubic')
+plt.imshow(zCoords, interpolation='none')
 plt.show()
-
