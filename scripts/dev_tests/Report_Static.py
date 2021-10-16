@@ -1,10 +1,7 @@
-import matplotlib.pyplot as plt
-import numpy as np
 import pandas as pd
-from svgpath2mpl import parse_path
+import numpy as np
 from scipy.interpolate import griddata
-
-
+import matplotlib.pyplot as plt
 
 def get_weather_data(date,time):
     df_weather = pd.read_csv(
@@ -17,9 +14,6 @@ def get_weather_data(date,time):
     df = df_weather.merge(df_stations, on='station_UID') #join table of weather data and static table with station locations
     df.drop_duplicates(subset=['station_UID'], inplace=True)
     return df
-
-
-
 
 
 LTU_x = [554670, 556622, 555891, 559912, 560230, 565447, 567792, 572439, 576577, 581711, 587225, 588292, 588943, 593511, 593780, 595408, 597291, 599583, 602623, 603950, 605690, 605038, 613367, 615871, 616039, 623215, 624873, 627768, 632664, 636683, 639637, 642351, 645250, 647554, 649287, 654417, 659197, 665412, 665477, 659430, 661687, 660788, 661999, 660632, 661815, 656864, 656738, 654740, 662706, 665466, 666638, 667055, 669005, 672620, 677180, 679790, 680101, 673670, 673690, 670282, 672357, 670589, 670062, 661914, 660372, 656945, 654511, 652785, 650076, 646806, 644199, 642247, 645032, 642884, 643280, 641301, 635409, 635074, 632926, 632106, 627059, 622301, 619073, 618863, 614426, 613962, 612025, 611573, 613952, 608873, 606228, 603883, 605544, 605955, 604229, 603268, 603538, 601518, 601166, 599624, 601002, 609576, 611349, 610617, 613575, 616335, 614127, 615992, 616607, 611238, 610087, 607121, 606027, 600185, 598967, 601937, 600891, 603665, 601113, 601801, 598995, 598499, 597414, 597617, 595448, 593350, 588185, 584110, 582721, 581562, 580416, 579450, 577987, 569965, 564892, 562508, 556564, 553141, 554324, 550582, 550787, 553647, 553873, 556988, 554503, 553474, 550438, 549514, 548479, 544924, 546253, 544805, 543267, 541025, 533926, 530997, 518293, 516436, 513802, 513227, 509333, 507512, 506769, 501997, 497834,
@@ -42,11 +36,9 @@ def add_LTU_area(LTU_x, LTU_y):
     plt.ylim(min(external_polygon_y), max(external_polygon_y))
 
 
-def plot_contour(df, plot_value, resolution=50, contour_method='cubic'):
-    y = df["long_LKS94"]
-    x = df["lat_LKS94"]
-    z = df[plot_value]
 
+
+def plot_contour(x, y, z, resolution=50, contour_method='cubic'):
     resolution = str(resolution)+'j'
     X, Y = np.mgrid[min(x):max(x):complex(resolution),
                     min(y):max(y):complex(resolution)]
@@ -56,30 +48,38 @@ def plot_contour(df, plot_value, resolution=50, contour_method='cubic'):
                  fill_value=np.average(z))
     return X, Y, Z
 
+print("############################## PROCESS ##############################")
+
+date = '2021-10-16'
+time = '07:00'
+
+df = get_weather_data(date,time)
 
 
-def style_plot(df,name,plot_value,colormap):
-    print("--- plotting "+str(name)+" ---")
-    plot_value = str(plot_value)
-    colormap = str(colormap)
-    add_LTU_area(LTU_x, LTU_y)
-    #smiley = parse_path("""m 739.01202,391.98936 c 13,26 13,57 9,85 -6,27 -18,52 -35,68 -21,20 -50,23 -77,18 -15,-4 -28,-12 -39,-23 -18,-17 -30,-40 -36,-67 -4,-20 -4,-41 0,-60 l 6,-21 z m -302,-1 c 2,3 6,20 7,29 5,28 1,57 -11,83 -15,30 -41,52 -72,60 -29,7 -57,0 -82,-15 -26,-17 -45,-49 -50,-82 -2,-12 -2,-33 0,-45 1,-10 5,-26 8,-30 z M 487.15488,66.132209 c 121,21 194,115.000001 212,233.000001 l 0,8 25,1 1,18 -481,0 c -6,-13 -10,-27 -13,-41 -13,-94 38,-146 114,-193.000001 45,-23 93,-29 142,-26 z m -47,18 c -52,6 -98,28.000001 -138,62.000001 -28,25 -46,56 -51,87 -4,20 -1,57 5,70 l 423,1 c 2,-56 -39,-118 -74,-157 -31,-34 -72,-54.000001 -116,-63.000001 -11,-2 -38,-2 -49,0 z m 138,324.000001 c -5,6 -6,40 -2,58 3,16 4,16 10,10 14,-14 38,-14 52,0 15,18 12,41 -6,55 -3,3 -5,5 -5,6 1,4 22,8 34,7 42,-4 57.6,-40 66.2,-77 3,-17 1,-53 -4,-59 l -145.2,0 z m -331,-1 c -4,5 -5,34 -4,50 2,14 6,24 8,24 1,0 3,-2 6,-5 17,-17 47,-13 58,9 7,16 4,31 -8,43 -4,4 -7,8 -7,9 0,0 4,2 8,3 51,17 105,-20 115,-80 3,-15 0,-43 -3,-53 z m 61,-266 c 0,0 46,-40 105,-53.000001 66,-15 114,7 114,7 0,0 -14,76.000001 -93,95.000001 -76,18 -126,-49 -126,-49 z""")
-    
-    '''
-    plt.scatter(df["lat_LKS94"],df["long_LKS94"],s=250,
-    c=df[plot_value],alpha=0.85, cmap=colormap)
-    '''
-    X, Y, Z = plot_contour(df, plot_value, resolution=50, contour_method='cubic')
-    plt.contourf(X, Y, Z, cmap="viridis")
-    
-    #plt.colorbar(shrink=0.83)
+def plot_as_surface(df,field_to_plot,colormap):
+    name = "TEMP NAME"
+    df.dropna(subset = [field_to_plot], inplace=True) #drop null values
+    df.index = range(0,len(df))
+
+    y = df["long_LKS94"]
+    x = df["lat_LKS94"]
+    z = df[field_to_plot]
+
+    X, Y, Z = plot_contour(x, y, z, resolution=50, contour_method='cubic')
+
+    plt.contourf(X, Y, Z, cmap=colormap)
     plt.xticks([])
     plt.yticks([])
+    plt.scatter(x, y, color="black", s=10)
+    add_LTU_area(LTU_x, LTU_y)
+    plt.autoscale(False)
 
-    plot_val_min = df[plot_value].min()
-    plot_val_max = df[plot_value].max()
+    plot_val_min = df[field_to_plot].min()
+    plot_val_max = df[field_to_plot].max()
+    plot_val_range = plot_val_max - plot_val_min
     plot_val_range = round(plot_val_max-plot_val_min, 1)
     
+    title = name + " | " + "min: " + str(plot_val_min) + " | max: " + str(plot_val_max) + " | range: " + str(plot_val_range) + " | "
     date_time_start = df['timestamp'].min()
     date_time_end = df['timestamp'].max()
     title = name + " during period " + str(date_time_start) + " - " + str(date_time_end)
@@ -95,33 +95,27 @@ def style_plot(df,name,plot_value,colormap):
     plt.text(319117, 5983941, statistics, fontdict=font2)
 
 
-print("############################## PROCESS ##############################")
-date = '2021-10-16'
-time = '15:00'
 
-df = get_weather_data(date,time)
-
-#plt.style.use('dark_background')
+plt.style.use('dark_background')
 plt.figure(figsize=(10,36))
 
-subplot_count = 2
-
+subplot_count = 3
 
 plt.subplot(subplot_count,1,1)
-style_plot(df,'Air temperature [C]','air_temp_C','coolwarm')
+plot_as_surface(df,'air_temp_C','coolwarm')
 
 plt.subplot(subplot_count,1,2)
-style_plot(df,'Wind speed, average [m/s]','wind_spd_avg_ms','plasma')
+plot_as_surface(df,'wind_spd_avg_ms','plasma')
+
+plt.subplot(subplot_count,1,3)
+plot_as_surface(df,'wind_dir','plasma')
 
 '''
-plt.subplot(subplot_count,1,3)
-style_plot(df,'Wind direction [d.d.]','wind_dir','plasma')
-
 plt.subplot(subplot_count, 1, 4)
-style_plot(df,'Precipitation amount [mm/h]','prcp_amount_mm','Blues')
+plot_as_surface(df,'Precipitation amount [mm/h]','prcp_amount_mm','Blues')
 
 plt.subplot(subplot_count, 1, 5)
-style_plot(df,'Visibility [m]','visibility_m','Blues')
+plot_as_surface(df,'Visibility [m]','visibility_m','Blues')
 '''
 
 plt.tight_layout()

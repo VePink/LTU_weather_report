@@ -56,7 +56,7 @@ time = '07:00'
 df = get_weather_data(date,time)
 
 
-def plot_as_surface(df,field_to_plot,colormap):
+def plot_as_surface(df, name, field_to_plot,colormap):
 
     df.dropna(subset = [field_to_plot], inplace=True) #drop null values
     df.index = range(0,len(df))
@@ -67,37 +67,56 @@ def plot_as_surface(df,field_to_plot,colormap):
 
     X, Y, Z = plot_contour(x, y, z, resolution=50, contour_method='cubic')
 
-    #fig, ax = plt.subplots(figsize=(13, 8))
     plt.contourf(X, Y, Z, cmap=colormap)
     plt.xticks([])
     plt.yticks([])
     plt.scatter(x, y, color="black", s=10)
     add_LTU_area(LTU_x, LTU_y)
     plt.autoscale(False)
+    plt.xticks([])
+    plt.yticks([])
+
+    plot_val_min = df[field_to_plot].min()
+    plot_val_max = df[field_to_plot].max()
+    plot_val_range = round(plot_val_max-plot_val_min, 1)
+    
+    date_time_start = df['timestamp'].min()
+    date_time_end = df['timestamp'].max()
+    title = name + " during period " + str(date_time_start) + " - " + str(date_time_end)
+    plt.title(title)
+    statistics = "min: " + str(plot_val_min) + "\n" + "max: " + str(plot_val_max) + "\n" + "range: " + str(plot_val_range)
+
+    font2 = {'family': 'Arial',
+             'color': 'grey',
+             'weight': 'normal',
+             'size': 16,
+             }
+    
+    plt.text(319117, 5983941, statistics, fontdict=font2)
 
 
 
 #plt.style.use('dark_background')
 plt.figure(figsize=(10,36))
 
-subplot_count = 2
+subplot_count = 5
 
 plt.subplot(subplot_count,1,1)
-plot_as_surface(df,'air_temp_C','coolwarm')
+plot_as_surface(df,'Air temp C','air_temp_C','coolwarm')
 
 plt.subplot(subplot_count,1,2)
-plot_as_surface(df,'wind_spd_avg_ms','plasma')
+plot_as_surface(df, 'Wind speed m/s','wind_spd_avg_ms','plasma')
 
-'''
+
 plt.subplot(subplot_count,1,3)
-style_plot(df,'Wind direction [d.d.]','wind_dir','plasma')
+plot_as_surface(df,'Wind direction [d.d.]','wind_dir','plasma')
 
 plt.subplot(subplot_count, 1, 4)
-style_plot(df,'Precipitation amount [mm/h]','prcp_amount_mm','Blues')
+plot_as_surface(df,'Precipitation amount [mm/h]','prcp_amount_mm','Blues')
 
 plt.subplot(subplot_count, 1, 5)
-style_plot(df,'Visibility [m]','visibility_m','Blues')
-'''
+plot_as_surface(df,'Visibility [m]','visibility_m','Blues')
+
 
 plt.tight_layout()
 plt.savefig('./reports/Report.png', dpi=600, orientation='portrait')
