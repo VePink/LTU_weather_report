@@ -56,68 +56,25 @@ time = '07:00'
 df = get_weather_data(date,time)
 
 
-def plot_as_surface(df, name, field_to_plot,colormap):
 
-    df.dropna(subset = [field_to_plot], inplace=True) #drop null values
-    df.index = range(0,len(df))
+field_to_plot = 'air_temp_C'
+df.dropna(subset = [field_to_plot], inplace=True) #drop null values
+df.index = range(0,len(df))
 
-    y = df["long_LKS94"]
-    x = df["lat_LKS94"]
-    z = df[field_to_plot]
+y = df["long_LKS94"]
+x = df["lat_LKS94"]
+z = df[field_to_plot]
 
-    X, Y, Z = plot_contour(x, y, z, resolution=50, contour_method='cubic')
+X, Y, Z = plot_contour(x, y, z, resolution=50, contour_method='cubic')
 
-    plt.contourf(X, Y, Z, cmap=colormap)
-    plt.xticks([])
-    plt.yticks([])
-    plt.scatter(x, y, color="black", s=10)
-    add_LTU_area(LTU_x, LTU_y)
-    plt.autoscale(False)
-    plt.xticks([])
-    plt.yticks([])
-
-    plot_val_min = df[field_to_plot].min()
-    plot_val_max = df[field_to_plot].max()
-    plot_val_range = round(plot_val_max-plot_val_min, 1)
-    
-    date_time_start = df['timestamp'].min()
-    date_time_end = df['timestamp'].max()
-    title = name + " during period " + str(date_time_start) + " - " + str(date_time_end)
-    plt.title(title)
-    statistics = "min: " + str(plot_val_min) + "\n" + "max: " + str(plot_val_max) + "\n" + "range: " + str(plot_val_range)
-
-    font2 = {'family': 'Arial',
-             'color': 'grey',
-             'weight': 'normal',
-             'size': 16,
-             }
-    
-    plt.text(319117, 5983941, statistics, fontdict=font2)
+fig, ax = plt.subplots(figsize=(13, 8))
+ax.contourf(X, Y, Z, cmap="viridis")
+plt.xticks([])
+plt.yticks([])
+ax.scatter(x, y, color="grey", s=20)
+add_LTU_area(LTU_x, LTU_y)
+ax.autoscale(False)
+ax.set_facecolor('xkcd:grey')
 
 
-
-#plt.style.use('dark_background')
-plt.figure(figsize=(10,36))
-
-subplot_count = 5
-
-plt.subplot(subplot_count,1,1)
-plot_as_surface(df,'Air temp C','air_temp_C','coolwarm')
-
-plt.subplot(subplot_count,1,2)
-plot_as_surface(df, 'Wind speed m/s','wind_spd_avg_ms','plasma')
-
-
-plt.subplot(subplot_count,1,3)
-plot_as_surface(df,'Wind direction [d.d.]','wind_dir','plasma')
-
-plt.subplot(subplot_count, 1, 4)
-plot_as_surface(df,'Precipitation amount [mm/h]','prcp_amount_mm','Blues')
-
-plt.subplot(subplot_count, 1, 5)
-plot_as_surface(df,'Visibility [m]','visibility_m','Blues')
-
-
-plt.tight_layout()
-plt.savefig('./reports/Report.png', dpi=600, orientation='portrait')
-#plt.show()
+plt.show()
