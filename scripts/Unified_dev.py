@@ -56,25 +56,49 @@ time = '07:00'
 df = get_weather_data(date,time)
 
 
+def plot_as_surface(df,field_to_plot,colormap):
 
-field_to_plot = 'air_temp_C'
-df.dropna(subset = [field_to_plot], inplace=True) #drop null values
-df.index = range(0,len(df))
+    df.dropna(subset = [field_to_plot], inplace=True) #drop null values
+    df.index = range(0,len(df))
 
-y = df["long_LKS94"]
-x = df["lat_LKS94"]
-z = df[field_to_plot]
+    y = df["long_LKS94"]
+    x = df["lat_LKS94"]
+    z = df[field_to_plot]
 
-X, Y, Z = plot_contour(x, y, z, resolution=50, contour_method='cubic')
+    X, Y, Z = plot_contour(x, y, z, resolution=50, contour_method='cubic')
 
-fig, ax = plt.subplots(figsize=(13, 8))
-ax.contourf(X, Y, Z, cmap="viridis")
-plt.xticks([])
-plt.yticks([])
-ax.scatter(x, y, color="black", s=10)
-add_LTU_area(LTU_x, LTU_y)
-ax.autoscale(False)
-ax.set_facecolor('xkcd:grey')
+    #fig, ax = plt.subplots(figsize=(13, 8))
+    plt.contourf(X, Y, Z, cmap=colormap)
+    plt.xticks([])
+    plt.yticks([])
+    plt.scatter(x, y, color="black", s=10)
+    add_LTU_area(LTU_x, LTU_y)
+    plt.autoscale(False)
 
 
-plt.show()
+
+#plt.style.use('dark_background')
+plt.figure(figsize=(10,36))
+
+subplot_count = 2
+
+plt.subplot(subplot_count,1,1)
+plot_as_surface(df,'air_temp_C','coolwarm')
+
+plt.subplot(subplot_count,1,2)
+plot_as_surface(df,'wind_spd_avg_ms','plasma')
+
+'''
+plt.subplot(subplot_count,1,3)
+style_plot(df,'Wind direction [d.d.]','wind_dir','plasma')
+
+plt.subplot(subplot_count, 1, 4)
+style_plot(df,'Precipitation amount [mm/h]','prcp_amount_mm','Blues')
+
+plt.subplot(subplot_count, 1, 5)
+style_plot(df,'Visibility [m]','visibility_m','Blues')
+'''
+
+plt.tight_layout()
+plt.savefig('./reports/Report.png', dpi=600, orientation='portrait')
+#plt.show()
