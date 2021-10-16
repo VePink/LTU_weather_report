@@ -34,9 +34,20 @@ LTU_y = [6257793, 6256778, 6253632, 6248401, 6242278, 6237410, 6228569, 6227297,
     
 
 def add_LTU_area(LTU_x, LTU_y):
-    plt.fill(LTU_x, LTU_y, c='C0')
-    #plt.plot(LTU_x, LTU_y, alpha=0.5)
+
+    # a 4x4 box (counterclockwise)
+    external_polygon_y = [6263556, 6263556, 5969088, 5969088, 6263556]
+    external_polygon_x = [686663, 297644, 297644, 686663, 686663]
+
+
+    # if you don't specify a color, you will see a seam
+    plt.fill(external_polygon_x+LTU_x,
+             external_polygon_y+LTU_y,
+             color='black')
+
     plt.gca().set_aspect('equal',adjustable='box') #prevents map aspect ratio distortion
+    plt.xlim(min(external_polygon_x), max(external_polygon_x))
+    plt.ylim(min(external_polygon_y), max(external_polygon_y))
 
 def plot_contour(x,y,z,resolution=50,contour_method='cubic'):
     resolution = str(resolution)+'j'
@@ -44,7 +55,8 @@ def plot_contour(x,y,z,resolution=50,contour_method='cubic'):
                     min(y):max(y):complex(resolution)]
     points = [[a, b] for a, b in zip(x, y)]
     Z = griddata(points, z, (X, Y),
-                 method=contour_method)
+                 method=contour_method,
+                 fill_value=np.average(z))
     return X, Y, Z
 
 print("############################## PROCESS ##############################")
@@ -90,10 +102,9 @@ fig, ax = plt.subplots(figsize=(13,8))
 ax.contourf(X,Y,Z, cmap="viridis")
 ax.scatter(x,y, color="black", s=10)
 add_LTU_area(LTU_x, LTU_y)
-plt.xlim(min(LTU_x), max(LTU_x))
-plt.ylim(min(LTU_y), max(LTU_y))
 ax.autoscale(False)
-ax.set_facecolor('xkcd:salmon')
+ax.set_facecolor('xkcd:grey')
+
 
 
 plt.show()
