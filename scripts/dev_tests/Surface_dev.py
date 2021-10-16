@@ -33,12 +33,19 @@ LTU_y = [6257793, 6256778, 6253632, 6248401, 6242278, 6237410, 6228569, 6227297,
     5979662, 5981349, 5978492, 5979820, 5976987, 5978020, 5976987, 5978426, 5978343, 5982024, 5984622, 5988282, 5992142, 6001893, 6004388, 6004628, 6010373, 6012934, 6014025, 6017132, 6018103, 6020036, 6018313, 6020305, 6023067, 6025460, 6027770, 6028549, 6030995, 6025824, 6034745, 6035977, 6044839, 6048233, 6050479, 6055649, 6058058, 6061819, 6064073, 6066481, 6069008, 6068620, 6070670, 6070663, 6075881, 6078687, 6080247, 6081512, 6085189, 6086858, 6085936, 6088321, 6087639, 6089522, 6090001, 6095395, 6094811, 6092885, 6093510, 6099782, 6104718, 6102039, 6104579, 6103760, 6100602, 6100435, 6103204, 6107191, 6107424, 6106069, 6106901, 6108896, 6111467, 6113269, 6118606, 6120791, 6119545, 6131884, 6126664, 6128387, 6131497, 6144923, 6159554, 6175532, 6180270, 6180810, 6202095, 6208226, 6218908, 6220559, 6219434, 6224438, 6228847, 6230083, 6234851, 6237915, 6242958, 6242708, 6245198, 6246032, 6244571, 6250794, 6249591, 6251233, 6255170, 6256419, 6255454, 6256995, 6255545, 6255957, 6253251, 6254242, 6252384, 6253999, 6250770, 6247244, 6249579, 6248553, 6249519, 6251025, 6253974, 6253873, 6253012, 6244612, 6243358, 6243818, 6241604, 6245182, 6248473, 6248952, 6250179, 6249672, 6246625, 6244385, 6247452, 6248906, 6248276, 6243376, 6243024, 6245434, 6244030, 6241911, 6240646, 6238455, 6238191, 6235035, 6235264, 6237069, 6239153, 6240827, 6240338, 6237694, 6238385, 6236151, 6239563, 6243445, 6245999, 6249302, 6249515, 6252499, 6252067, 6254582, 6253341, 6253934, 6256184, 6257793]
     
 
-def add_LTU_border(LTU_x, LTU_y):
-    plt.plot(LTU_x, LTU_y, alpha=0.5)
+def add_LTU_area(LTU_x, LTU_y):
+    plt.fill(LTU_x, LTU_y, c='C0')
+    #plt.plot(LTU_x, LTU_y, alpha=0.5)
     plt.gca().set_aspect('equal',adjustable='box') #prevents map aspect ratio distortion
 
-
-
+def plot_contour(x,y,z,resolution=50,contour_method='cubic'):
+    resolution = str(resolution)+'j'
+    X, Y = np.mgrid[min(x):max(x):complex(resolution),
+                    min(y):max(y):complex(resolution)]
+    points = [[a, b] for a, b in zip(x, y)]
+    Z = griddata(points, z, (X, Y),
+                 method=contour_method)
+    return X, Y, Z
 
 print("############################## PROCESS ##############################")
 
@@ -47,7 +54,7 @@ time = '09:00'
 
 df = get_weather_data(date,time)
 
-field_to_plot = 'prcp_amount_mm'
+field_to_plot = 'air_temp_C'
 df.dropna(subset = [field_to_plot], inplace=True) #drop null values
 df.index = range(0,len(df))
 
@@ -77,23 +84,16 @@ x = totalPointsArray[:,1]
 z = totalPointsArray[:,2]
 
 
-
-def plot_contour(x,y,z,resolution = 50,contour_method='linear'):
-    resolution = str(resolution)+'j'
-    X,Y = np.mgrid[min(x):max(x):complex(resolution),   min(y):max(y):complex(resolution)]
-    points = [[a,b] for a,b in zip(x,y)]
-    Z = griddata(points, z, (X, Y), method=contour_method)
-    return X,Y,Z
-
 X,Y,Z = plot_contour(x,y,z,resolution = 50,contour_method='linear')
 
 fig, ax = plt.subplots(figsize=(13,8))
 ax.contourf(X,Y,Z, cmap="viridis")
-ax.scatter(x,y, color="black", linewidth=1, edgecolor="ivory", s=10)
-add_LTU_border(LTU_x, LTU_y)
+ax.scatter(x,y, color="black", s=10)
+add_LTU_area(LTU_x, LTU_y)
 plt.xlim(min(LTU_x), max(LTU_x))
 plt.ylim(min(LTU_y), max(LTU_y))
 ax.autoscale(False)
+ax.set_facecolor('xkcd:salmon')
 
 
 plt.show()
