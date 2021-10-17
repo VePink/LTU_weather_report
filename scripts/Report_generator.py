@@ -159,8 +159,8 @@ def result_directory_cleanup(folder):
 
 print("#################### PROCESS ####################")
 
-date = '2021-10-15'
-time = '11:00'
+date = '2021-10-13'
+time = '06:00'
 time_oldest_allowed = datetime.strptime(time, '%H:%M') - datetime.strptime("00:15", '%H:%M')
 result_dir = './reports/'
 
