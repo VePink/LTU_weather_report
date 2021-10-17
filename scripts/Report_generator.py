@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 from datetime import datetime
 
 
-def get_weather_data(date,time,time_oldest_allowed):
+def get_weather_data(date,time):
     print("---------------- SCAN WEATHER LOGS ----------------")
     df_weather = pd.read_csv(
         'C:/Users/Ve/Documents/GitHub/eismoinfo-weather/LOGS/'+"EIW_"+ date.replace("-", "") +'.csv', index_col=None, header=0)
@@ -14,11 +14,11 @@ def get_weather_data(date,time,time_oldest_allowed):
         'C:/Users/Ve/Documents/GitHub/eismoinfo-weather/stations.csv', index_col=None, header=0)
     df_weather.sort_values(by=['timestamp'], ascending=False)
     df_weather = df_weather[df_weather['timestamp']< date +" "+ time]
-    df_weather = df_weather[df_weather['timestamp']> date +" "+ str(time_oldest_allowed)]
     df_stations = df_stations[['station_UID', 'station_name', 'lat_LKS94', 'long_LKS94']]
     df = df_weather.merge(df_stations, on='station_UID') #join table of weather data and static table with station locations
     df.drop_duplicates(subset=['station_UID'], inplace=True)
     print("---------------- RETURN DATAFRAME ----------------")
+    print(df)
     print("\n")
     return df
 
@@ -159,12 +159,12 @@ def result_directory_cleanup(folder):
 
 print("#################### PROCESS ####################")
 
-date = '2021-10-13'
-time = '06:00'
+date = '2021-10-16'
+time = '07:00'
 time_oldest_allowed = datetime.strptime(time, '%H:%M') - datetime.strptime("00:15", '%H:%M')
 result_dir = './reports/'
 
-df = get_weather_data(date,time,time_oldest_allowed)
+df = get_weather_data(date,time)
 
 subplot_count = 4
 
