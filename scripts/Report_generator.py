@@ -66,8 +66,6 @@ def add_LTUBorder_layer(LTU_x, LTU_y):
 
 
 
-
-
 def interpolate_XYZ(x, y, z, resolution=50, contour_method='cubic'):
     resolution = str(resolution)+'j'
     X, Y = np.mgrid[min(x):max(x):complex(resolution),
@@ -77,7 +75,6 @@ def interpolate_XYZ(x, y, z, resolution=50, contour_method='cubic'):
                  method=contour_method,
                  fill_value=np.average(z))
     return X, Y, Z
-
 
 
 
@@ -162,8 +159,8 @@ def result_directory_cleanup(folder):
 
 print("#################### PROCESS ####################")
 
-date = '2021-10-17'
-time = '14:00'
+date = '2021-10-15'
+time = '11:00'
 time_oldest_allowed = datetime.strptime(time, '%H:%M') - datetime.strptime("00:15", '%H:%M')
 result_dir = './reports/'
 
