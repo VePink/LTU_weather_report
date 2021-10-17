@@ -3,8 +3,8 @@ Creates visual report about weather conditions in Lithuania. Report is presented
 
 Example reports:
 
-<img src="/images/Report_20211015_1100.png" width="200"/>
-<img src="/images/Report_20211013_0600.png" width="200"/>
+<img src="/images/Report_20211015_1100.png" width="300"/>
+<img src="/images/Report_20211013_0600.png" width="300"/>
 
 
 
