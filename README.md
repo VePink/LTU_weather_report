@@ -1,7 +1,7 @@
 # LTU_weather_report
 Creates visual report about weather conditions in Lithuania. Report is presented both as map and statistics.
 
-<img src="/images/thumbnail.png" width="500"/>
+<img src="/images/thumbnail.webp" width="500"/>
 
 Example report:
 <img src="/images/Report_20211015_1100.png" style="width:100%"/>
