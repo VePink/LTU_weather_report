@@ -159,14 +159,14 @@ def result_directory_cleanup(folder):
 
 print("#################### PROCESS ####################")
 
-date = '2021-10-16'
-time = '07:00'
+date = '2021-11-29'
+time = '16:30'
 time_oldest_allowed = datetime.strptime(time, '%H:%M') - datetime.strptime("00:15", '%H:%M')
 result_dir = './reports/'
 
 df = get_weather_data(date,time)
 
-subplot_count = 4
+subplot_count = 5
 
 plt.style.use('dark_background')
 plt.figure(figsize=(10,subplot_count*7))
@@ -185,14 +185,21 @@ add_station_layer(df)
 add_statistics(df,'wind_spd_avg_ms')
 add_name('Wind speed [m/s]')
 
-plt.subplot(subplot_count, 1, 3)
+plt.subplot(subplot_count,1,3)
+plot_as_surface(df,'wind_spd_max_ms','Reds')
+add_LTUBorder_layer(LTU_x, LTU_y)
+add_station_layer(df)
+add_statistics(df,'wind_spd_max_ms')
+add_name('Wind gusts [m/s]')
+
+plt.subplot(subplot_count, 1, 4)
 plot_as_surface(df,'prcp_amount_mm','Blues')
 add_LTUBorder_layer(LTU_x, LTU_y)
 add_station_layer(df)
 add_statistics(df,'prcp_amount_mm')
 add_name('Precipitation intensity [mm/h]')
 
-plt.subplot(subplot_count, 1, 4)
+plt.subplot(subplot_count, 1, 5)
 plot_as_surface(df,'visibility_m','Blues')
 add_LTUBorder_layer(LTU_x, LTU_y)
 add_station_layer(df)
